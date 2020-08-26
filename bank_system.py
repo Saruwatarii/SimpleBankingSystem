@@ -1,7 +1,7 @@
 import random
 import sys
 
-iin = 400000
+iin = "400000"
 card_info = {}
 balance = 0
 while True:
@@ -11,22 +11,24 @@ while True:
     user_input = int(input())
 
     if user_input == 1:
-        ran_card_num = random.randrange(1000000000, 9999999999)
-        pin_card_num = random.randrange(0000, 9999)
-        full_ran_card = str(iin) + str(ran_card_num)
+        ran_card_num = str(random.randrange(1000000000, 9999999999))
+        pin_card_num = str(random.randint(0000, 9999))
+        if len(pin_card_num) != 4:
+            pin_card_num = '0' + pin_card_num
+        full_ran_card = iin + ran_card_num
         card_info[full_ran_card] = pin_card_num
-        print(f"{str(iin) + str(ran_card_num)}")
-        print(f"Your card PIN:\n{pin_card_num}")
-        # print(card_info)
+        print("\nYour card has been created")
+        print(f"Your car number:\n{full_ran_card}")
+        print(f"Your card PIN:\n{pin_card_num}\n")
+
 
     elif user_input == 2:
-        print("Enter your card number:")
+        print("\nEnter your card number:")
         card_number = input()
         print("Enter your PIN: ")
-        pin_number = int(input())
-        if card_number in card_info and card_info[
-            card_number] == pin_number:  # and card_info[card_number] == pin_number:
-            print("You have successfully logged in!\n")
+        pin_number = input()
+        if card_number in card_info and card_info[card_number] == pin_number:  # and card_info[card_number] == pin_number:
+            print("\nYou have successfully logged in!\n")
             while True:
                 print("1. Balance")
                 print("2. Log out")
@@ -35,8 +37,8 @@ while True:
                 if login_success == 1:
                     print(f"\nBalance: {balance}\n")
                 elif login_success == 2:
-                    print("You have successfully logged out\n")
-                    False
+                    print("\nYou have successfully logged out\n")
+                    break
                 elif login_success == 0:
                     print("\nBye!")
                     sys.exit()
