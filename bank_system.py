@@ -3,12 +3,16 @@ import sys
 import sqlite3
 
 conn = sqlite3.connect("card.s3db")
-# Cursor object
+# Cursor object-**
+
+
 cur = conn.cursor()
 # Execute the query
+'''
 sql_drop_card_table = """DROP TABLE card;"""
 cur.execute(sql_drop_card_table)
 conn.commit()
+'''
 card_info = {}
 
 def create_sql_table():
@@ -80,25 +84,51 @@ def balance():
                     FROM
                         card
                     WHERE
-                        number = {number[0]} AND pin = {number[1]}""")
-    print(f"\nBalance: {cur.fetchone()[0]}")
+                        number = {card_number} AND pin = {pin_number}""")
+    conn.commit()
+    print(f"\nBalance: {cur.fetchone()[0]}\n")
+
+def add_income():
+    "Deposit money into the account"
+    income = int(input("\nEnter income:\n"))
+    cur.execute(f"""UPDATE 
+                       card 
+                   SET 
+                       balance = balance + {income}
+                """)
+    conn.commit()
+    print("Income was added!\n")
+    logged_in()
 
 def logged_in():
     'The menu after the user has logged in'
-    print("\nYou have successfully logged in!\n")
+    flag = True
     while True:
         print("1. Balance")
-        print("2. Log out")
+        print("2. Add income")
+        print("3. Do transfer")
+        print("4. Close account")
+        print("5. Log out")
         print("0. Exit")
         login_success = int(input())
         if login_success == 1:
             balance()
         elif login_success == 2:
+            add_income()
+        elif login_success == 4:
+            close_account()
+        elif login_success == 5:
             print("\nYou have successfully logged out\n")
-            break
+            main_menu()
         elif login_success == 0:
             print("\nBye!")
             sys.exit()
+def close_account():
+    cur.execute(f"""DELETE FROM card
+                WHERE number = {card_number}""")
+  #  removing = card_number.pop("card_number")
+    del card_info[card_number]
+    print("\nThe account has been closed!\n")
 
 def create_account():
     '''number variable passes to the luhm_algo_checker function which return a valid card number and a pin code.
@@ -125,13 +155,16 @@ def main_menu():
                 flag = False
         elif user_input == 2:
             print("\nEnter your card number:")
-            card_number = input()
+            global card_number
+            card_number= input()
             print("Enter your PIN: ")
+            global pin_number
             pin_number = input()
             if card_number in card_info and card_info[card_number] == pin_number:
+                print("\nYou have successfully logged in!\n")
                 logged_in()
             else:
-                print("Wrong card number or PIN!")
+                print("\nWrong card number or PIN!\n")
                 True
         elif user_input == 0:
             print("\nBye!")
