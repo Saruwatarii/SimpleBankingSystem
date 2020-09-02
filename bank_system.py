@@ -4,8 +4,6 @@ import sqlite3
 
 conn = sqlite3.connect("card.s3db")
 # Cursor object-**
-
-
 cur = conn.cursor()
 # Execute the query
 '''
@@ -77,6 +75,30 @@ def luhm_algo_checker():
 
     return full_ran_card, pin_card_num
 
+def valid_luhm(valid):
+    flag = True
+    while flag:
+
+        begge = list(str(valid))
+
+        begge_int = [int(x) for x in begge]
+        intsumming = "".join([str(x) for x in begge])
+
+        org_num = intsumming
+        liste = list(org_num)
+        odd_multi_2 = [int(x) * 2 if i % 2 == 0 else int(x) for i, x in enumerate(liste)]
+        substract_9 = [x - 9 if x > 9 else x for x in odd_multi_2]
+        check_sum = sum(substract_9)
+        adder = 0
+
+        if check_sum % 10 == 0:
+            check_sum = 0
+            flag = False
+        else:
+            print("Probably you made a mistake in the card number. Please try again!\n")
+            flag = False
+            logged_in()
+
 def balance():
     'Fetching the balance from the database corresponding to the account'
     cur.execute(f"""SELECT 
@@ -93,9 +115,8 @@ def add_income():
     income = int(input("\nEnter income:\n"))
     cur.execute(f"""UPDATE 
                        card 
-                   SET 
-                       balance = balance + {income}
-                """)
+                    SET 
+                       balance = balance + {income}""")
     conn.commit()
     print("Income was added!\n")
     logged_in()
@@ -115,6 +136,8 @@ def logged_in():
             balance()
         elif login_success == 2:
             add_income()
+        elif login_success == 3:
+            transfer()
         elif login_success == 4:
             close_account()
         elif login_success == 5:
@@ -123,12 +146,51 @@ def logged_in():
         elif login_success == 0:
             print("\nBye!")
             sys.exit()
+
 def close_account():
+    "Delete row from database and delete key,value from card_info from the user logged in."
     cur.execute(f"""DELETE FROM card
                 WHERE number = {card_number}""")
-  #  removing = card_number.pop("card_number")
+    conn.commit()
+    #  removing = card_number.pop("card_number")
     del card_info[card_number]
     print("\nThe account has been closed!\n")
+    main_menu()
+
+def transfer():
+    "Transfer money to another account if enough money."
+    print("Transfer")
+    transfer_number = int(input("Enter card number: "))
+    valid_luhm(transfer_number)
+    print(card_number)
+    if str(transfer_number) == card_number:
+        print("You can't transfer money to the same account!")
+        logged_in()
+    if str(transfer_number) not in card_info:
+        print("Such a card does not exist")
+        logged_in()
+
+    cur.execute(f"""SELECT 
+                            balance
+                        FROM
+                            card
+                        WHERE
+                            number = {card_number} AND pin = {pin_number}""")
+    conn.commit()
+    transfer_money = int(input("Enter how much money you want to transfer:"))
+    if str(transfer_number) in card_info:
+        if (cur.fetchone()[0]) < transfer_money:
+            print("Not enough money!")
+            logged_in()
+        else:
+            print("Success")
+            cur.execute(f"""UPDATE 
+                                   card 
+                               SET 
+                                   balance = balance - {transfer_money}
+                            """)
+            conn.commit()
+            logged_in()
 
 def create_account():
     '''number variable passes to the luhm_algo_checker function which return a valid card number and a pin code.
@@ -156,7 +218,7 @@ def main_menu():
         elif user_input == 2:
             print("\nEnter your card number:")
             global card_number
-            card_number= input()
+            card_number = input()
             print("Enter your PIN: ")
             global pin_number
             pin_number = input()
