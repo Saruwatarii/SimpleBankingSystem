@@ -23,21 +23,21 @@ The program stores the card number, pin code and balance of each created account
 
 **Creating a new account**
 The program start with a main menu: 
-'1. Create an account
-2. Log into account
-0. Exit'
+-'1. Create an account
+-2. Log into account
+-0. Exit'
 
 **Log in**
 Output: 'You have successfully logged in!'
-'1. Balance
-2. Log out
-0. Exit'
+-'1. Balance
+-2. Log out
+-0. Exit'
 
 When choosing 1: 
 Output: 'Balance {account.balance}'
 And go back to the log in menu.
 
-when choosing 2:
+When choosing 2:
 The user goes back to the main menu for creating an account.
 
 When choosing 2:
