@@ -44,6 +44,6 @@ When choosing 2:
 The user goes back to the main menu for creating an account.
 
 When choosing 0:
-Outpur: 'Bye!'
+Output: 'Bye!'
 The user exit the program.
 
