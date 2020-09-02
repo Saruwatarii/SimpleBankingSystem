@@ -22,16 +22,18 @@ The number that satisfies that condition is the digit 3. Therefore, the checksum
 The program stores the card number, pin code and balance of each created accounts in a database. The database used in this program is SQLite3.
 
 **Creating a new account**
+
 The program start with a main menu: 
--'1. Create an account
--2. Log into account
--0. Exit'
+- '1. Create an account
+- 2. Log into account
+- 0. Exit'
 
 **Log in**
+
 Output: 'You have successfully logged in!'
--'1. Balance
--2. Log out
--0. Exit'
+- '1. Balance
+- 2. Log out
+- 0. Exit'
 
 When choosing 1: 
 Output: 'Balance {account.balance}'
